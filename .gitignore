@@ -103,3 +103,7 @@ history.txt
 # jupyter notebook
 .ipynb_checkpoints/
 Untitled.ipynb
+
+# ignore pkg and bin directories for go
+pkg/
+bin/

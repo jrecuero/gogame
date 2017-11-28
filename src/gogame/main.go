@@ -1,10 +1,10 @@
 package main
 
 import (
-	"bufio"
+	//"bufio"
 	"fmt"
 	"gogame/game"
-	"os"
+	//"os"
 	"strings"
 )
 
@@ -27,9 +27,10 @@ func createWeapon(name string, faces int, damage int) game.Weapon {
 }
 
 func main() {
-	reader := bufio.NewReader(os.Stdin)
+	//reader := bufio.NewReader(os.Stdin)
 	fmt.Print("Enter name: ")
-	name, _ := reader.ReadString('\n')
+	//name, _ := reader.ReadString('\n')
+	name := "PLAYER"
 	player := createPlayer(strings.TrimSpace(name), 100, "I am player number one")
 	player.Weapon = createWeapon("Weapon", 4, 1)
 	player.Attack = 2

@@ -5,8 +5,40 @@ import (
 	"fmt"
 	"gogame/game"
 	//"os"
+	"bytes"
+	"gopkg.in/validator.v2"
 	"strings"
 )
+
+type User struct {
+	FirstName string `validate:"min=3,max=40"`
+	LastName  string `validate:"min=3, max=8"`
+	Age       int    `validate:"min=18"`
+	Zip       string `validate:"nonzero"`
+	Salute    func(salutation string) string
+}
+
+func checkValidateModule() {
+	ur := User{
+		FirstName: "ok",
+		LastName:  "Recuero Arias",
+		Age:       10,
+		Salute: func(salutation string) string {
+			var buffer bytes.Buffer
+			buffer.WriteString(salutation)
+			buffer.WriteString(" world!")
+			return buffer.String()
+		},
+	}
+	if errs := validator.Validate(ur); errs != nil {
+		err := errs.(validator.ErrorMap)
+		for f, e := range err {
+			fmt.Printf("\t - %s (%v)\n", f, e)
+		}
+	} else {
+		fmt.Println("User said: ", ur.Salute("Hello"))
+	}
+}
 
 func createPlayer(name string, live int, desc string) game.Actor {
 	actor := game.NewActor(name)
@@ -40,4 +72,5 @@ func main() {
 	fmt.Printf("%s rolls dice with %d\n", player.Name, player.Hit())
 	fmt.Println("Weapon damage for ", player.Weapon.Damage())
 
+	checkValidateModule()
 }

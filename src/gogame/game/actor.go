@@ -6,7 +6,7 @@ import (
 	validator "gopkg.in/validator.v2"
 )
 
-var dice = NewDice(20)
+var dice, _ = NewDice(20)
 
 // Actor represents any player in the game.
 type Actor struct {
@@ -18,17 +18,23 @@ type Actor struct {
 }
 
 // NewActor function creates a new Actor.
-func NewActor(name string, options ...func(*Actor) error) Actor {
-	actor := Actor{Object: NewObject(name)}
+func NewActor(name string, options ...func(*Actor) error) (*Actor, error) {
+	obj, errs := NewObject(name)
+	if errs != nil {
+		return nil, errs
+	}
+	actor := Actor{
+		Object: *obj,
+	}
 	for _, option := range options {
 		if err := option(&actor); err != nil {
-			panic(err)
+			return nil, err
 		}
 	}
-	if errs := validator.Validate(actor); errs != nil {
-		panic(errs)
+	if errs = validator.Validate(actor); errs != nil {
+		return nil, errs
 	}
-	return actor
+	return &actor, nil
 }
 
 // Hit function rolls a hit dice.

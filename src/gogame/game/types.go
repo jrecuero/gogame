@@ -13,14 +13,14 @@ type Object struct {
 }
 
 // NewObject function creates a new Object.
-func NewObject(name string) Object {
+func NewObject(name string) (*Object, error) {
 	id++
 	obj := Object{
 		ID:   id,
 		Name: name,
 	}
 	if errs := validator.Validate(obj); errs != nil {
-		panic(errs)
+		return nil, errs
 	}
-	return obj
+	return &obj, nil
 }

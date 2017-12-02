@@ -10,12 +10,21 @@ type Weapon struct {
 }
 
 // NewWeapon function creates a new weapon.
-func NewWeapon(name string, faces int, damag int) Weapon {
-	return Weapon{
-		Object: NewObject(name),
-		Dice:   NewDice(faces),
+func NewWeapon(name string, faces int, damag int) (*Weapon, error) {
+	dice, errs := NewDice(faces)
+	if errs != nil {
+		return nil, errs
+	}
+	obj, errs := NewObject(name)
+	if errs != nil {
+		return nil, errs
+	}
+	weapon := Weapon{
+		Object: *obj,
+		Dice:   *dice,
 		damage: damag,
 	}
+	return &weapon, nil
 }
 
 // Damage function rolls a damage dice.

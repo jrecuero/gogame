@@ -51,8 +51,8 @@ func createPlayer(actor *game.Actor) error {
 	actor.Attack = 2
 	actor.Defense = 5
 	actor.Desc = "I am player number one"
-	weapon := game.NewWeapon("Sword", 4, 1)
-	actor.Weapon = &weapon
+	weapon, _ := game.NewWeapon("Sword", 4, 1)
+	actor.Weapon = weapon
 	return nil
 }
 
@@ -65,7 +65,10 @@ func getName() string {
 }
 
 func main() {
-	player := game.NewActor(getName(), createPlayer)
+	player, errs := game.NewActor(getName(), createPlayer)
+	if errs != nil {
+		panic(errs)
+	}
 	player.Print()
 	fmt.Printf("%s rolls dice with %d\n", player.Name, player.Hit())
 	fmt.Println("Weapon damage for ", player.Weapon.Damage())

@@ -13,14 +13,14 @@ type Dice struct {
 }
 
 // NewDice function creates a new dice.
-func NewDice(faces int) Dice {
+func NewDice(faces int) (*Dice, error) {
 	dice := Dice{
 		Faces: faces,
 	}
 	if errs := validator.Validate(dice); errs != nil {
-		panic(errs)
+		return nil, errs
 	}
-	return dice
+	return &dice, nil
 }
 
 // Roll function roll a dice.

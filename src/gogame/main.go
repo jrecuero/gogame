@@ -48,10 +48,20 @@ func roll(d game.Dice) {
 
 func createPlayer(actor *game.Actor) error {
 	actor.Live = 100
+	actor.Attack = 5
+	actor.Defense = 10
+	actor.Desc = "I am the main player"
+	weapon, _ := game.NewWeapon("Sword", 4, 1)
+	actor.Weapon = weapon
+	return nil
+}
+
+func createEnemy(actor *game.Actor) error {
+	actor.Live = 100
 	actor.Attack = 2
 	actor.Defense = 5
-	actor.Desc = "I am player number one"
-	weapon, _ := game.NewWeapon("Sword", 4, 1)
+	actor.Desc = "I am the main enemy"
+	weapon, _ := game.NewWeapon("Axe", 3, 1)
 	actor.Weapon = weapon
 	return nil
 }
@@ -64,14 +74,29 @@ func getName() string {
 	return strings.TrimSpace(name)
 }
 
+func isAHit(orig *game.Actor, target *game.Actor) bool {
+	//return orig.Hit() > target.Defense
+	hit := orig.Hit()
+	defense := target.Defense
+	fmt.Printf("%s hit %s : %d vs %d\n", orig.Name, target.Name, hit, defense)
+	return hit > defense
+}
+
 func main() {
-	player, errs := game.NewActor(getName(), createPlayer)
+	player, errs := game.NewActor("PLAYER", createPlayer)
+	if errs != nil {
+		panic(errs)
+	}
+	enemy, errs := game.NewActor("ENEMY", createEnemy)
 	if errs != nil {
 		panic(errs)
 	}
 	player.Print()
-	fmt.Printf("%s rolls dice with %d\n", player.Name, player.Hit())
-	fmt.Println("Weapon damage for ", player.Weapon.Damage())
+	enemy.Print()
+	if isAHit(player, enemy) {
+		damage := player.Weapon.Damage()
+		fmt.Printf("%s damage %s for %d\n", player.Name, enemy.Name, damage)
+	}
 
 	//checkValidateModule()
 }
